@@ -1,6 +1,7 @@
-package com.example.droidkaigi.conf2020app.data.response
+package com.example.droidkaigi.conf2020app.data
 
 import com.example.droidkaigi.conf2020app.BuildConfig
+import com.example.droidkaigi.conf2020app.data.response.TimeTable
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -27,10 +28,11 @@ object DroidKaigiApi {
         .add(KotlinJsonAdapterFactory())
         .build()
 
-   private  var timeTableAdapter: JsonAdapter<TimeTable> =
+   private  var timeTableAdapter =
         moshi.adapter<TimeTable>(TimeTable::class.java)
 
-    private val client = Client(apiEndpoint)
+    private val client =
+        Client(apiEndpoint)
 
     fun fetchTimeTable(): TimeTable {
         val payload = client.run("timetable")

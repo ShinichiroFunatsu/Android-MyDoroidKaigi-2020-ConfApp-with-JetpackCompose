@@ -1,4 +1,4 @@
-package com.example.droidkaigi.conf2020app
+package com.example.droidkaigi.conf2020app.ui
 
 import android.os.Bundle
 import android.util.Log
@@ -9,7 +9,7 @@ import androidx.ui.core.Text
 import androidx.ui.core.setContent
 import androidx.ui.material.MaterialTheme
 import androidx.ui.tooling.preview.Preview
-import com.example.droidkaigi.conf2020app.data.response.DroidKaigiApi
+import com.example.droidkaigi.conf2020app.data.DroidKaigiApi
 import com.example.droidkaigi.conf2020app.data.response.TimeTable
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity() {
 
 @Model
 class State {
-    val droidKaigiApi by lazy {  DroidKaigiApi }
+    val droidKaigiApi by lazy { DroidKaigiApi }
     fun getTimeTable() {
         var timeTable: TimeTable? = null
         GlobalScope.launch {

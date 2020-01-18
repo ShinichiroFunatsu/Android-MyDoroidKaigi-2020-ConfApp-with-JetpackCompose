@@ -1,4 +1,4 @@
-package com.example.droidkaigi.conf2020app.data.response
+package com.example.droidkaigi.conf2020app.data
 
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
