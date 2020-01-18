@@ -1,8 +1,6 @@
 package com.example.droidkaigi.conf2020app.data.response
 
-import kotlinx.serialization.Serializable
 
-@Serializable
 data class TimeTable(
     val categories: List<Category>,
     val questions: List<Question>,
@@ -11,7 +9,6 @@ data class TimeTable(
     val speakers: List<Speaker>
 )
 
-@Serializable
 data class Category(
     val id: Int,
     val items: List<Item>,
@@ -19,26 +16,22 @@ data class Category(
     val title: Title
 )
 
-@Serializable
 data class Item(
     val id: Int,
     val name: Name,
     val sort: Int
 )
 
-@Serializable
 data class Name(
     val en: String,
     val ja: String
 )
 
-@Serializable
 data class Title(
     val en: String,
     val ja: String
 )
 
-@Serializable
 data class Question(
     val id: Int,
     val question: QuestionX,
@@ -46,26 +39,22 @@ data class Question(
     val sort: Int
 )
 
-@Serializable
 data class QuestionX(
     val en: String,
     val ja: String
 )
 
-@Serializable
 data class Room(
     val id: Int,
     val name: NameX,
     val sort: Int
 )
 
-@Serializable
 data class NameX(
     val en: String,
     val ja: String
 )
 
-@Serializable
 data class Session(
     val asset: Asset,
     val description: String?,
@@ -87,19 +76,16 @@ data class Session(
     val title: TitleX
 )
 
-@Serializable
 data class Asset(
     val slideUrl: String?,
     val videoUrl: String?
 )
 
-@Serializable
 data class TitleX(
     val en: String,
     val ja: String
 )
 
-@Serializable
 data class Speaker(
     val bio: String,
     val firstName: String?,

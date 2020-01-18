@@ -1,8 +1,5 @@
 package com.example.droidkaigi.conf2020app.data.response
 
-import kotlinx.serialization.Serializable
-
-@Serializable
 data class Sponsor(
     val companyLogoUrl: String,
     val companyName: CompanyName,
@@ -14,7 +11,6 @@ data class Sponsor(
     val sort: Int
 )
 
-@Serializable
 data class CompanyName(
     val en: String,
     val ja: String

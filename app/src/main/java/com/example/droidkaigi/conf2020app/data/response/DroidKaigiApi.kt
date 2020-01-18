@@ -1,14 +1,9 @@
 package com.example.droidkaigi.conf2020app.data.response
 
 import com.example.droidkaigi.conf2020app.BuildConfig
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
-import okhttp3.MediaType
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 
 
 /*
@@ -28,10 +23,17 @@ release https://api.droidkaigi.jp/2020
 const val apiEndpoint = BuildConfig.API_ENDPOINT
 
 object DroidKaigiApi {
+    private val moshi = Moshi.Builder()
+        .add(KotlinJsonAdapterFactory())
+        .build()
+
+   private  var timeTableAdapter: JsonAdapter<TimeTable> =
+        moshi.adapter<TimeTable>(TimeTable::class.java)
+
     private val client = Client(apiEndpoint)
+
     fun fetchTimeTable(): TimeTable {
         val payload = client.run("timetable")
-        val json = Json(JsonConfiguration.Stable)
-        return json.parse(TimeTable.serializer(), payload)
+        return timeTableAdapter.fromJson(payload)!!
     }
 }

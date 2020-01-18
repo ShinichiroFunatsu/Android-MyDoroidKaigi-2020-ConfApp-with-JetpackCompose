@@ -1,8 +1,6 @@
 package com.example.droidkaigi.conf2020app.data.response
 
-import kotlinx.serialization.Serializable
 
-@Serializable
 data class Announcement(
     val content: String,
     val id: Int,
