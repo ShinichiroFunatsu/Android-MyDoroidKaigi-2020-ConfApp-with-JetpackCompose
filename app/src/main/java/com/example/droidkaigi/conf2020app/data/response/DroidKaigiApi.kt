@@ -1,17 +1,14 @@
 package com.example.droidkaigi.conf2020app.data.response
 
 import com.example.droidkaigi.conf2020app.BuildConfig
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.cio.CIO
-import io.ktor.client.features.json.JsonFeature
-import io.ktor.client.features.json.serializer.KotlinxSerializer
-import io.ktor.client.request.accept
-import io.ktor.client.request.get
-import io.ktor.client.request.url
-import io.ktor.http.ContentType
-import io.ktor.util.KtorExperimentalAPI
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 
 
 /*
@@ -30,22 +27,11 @@ release https://api.droidkaigi.jp/2020
 */
 const val apiEndpoint = BuildConfig.API_ENDPOINT
 
-@KtorExperimentalAPI
 object DroidKaigiApi {
-    private val client = HttpClient(CIO) {
-        install(JsonFeature) {
-            serializer = KotlinxSerializer(
-                Json(
-                    JsonConfiguration.Stable.copy(strictMode = false)
-                )
-            )
-        }
-    }
-    private val json = Json(JsonConfiguration.Stable.copy(strictMode = false))
-    suspend fun fetchTimeTable(): TimeTable {
-        return client.get<String> {
-            url("$apiEndpoint/timetable")
-            accept(ContentType.Application.Json)
-        }.let { json.parse(TimeTable.serializer(), it) }
+    private val client = Client(apiEndpoint)
+    fun fetchTimeTable(): TimeTable {
+        val payload = client.run("timetable")
+        val json = Json(JsonConfiguration.Stable)
+        return json.parse(TimeTable.serializer(), payload)
     }
 }

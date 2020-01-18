@@ -11,11 +11,9 @@ import androidx.ui.material.MaterialTheme
 import androidx.ui.tooling.preview.Preview
 import com.example.droidkaigi.conf2020app.data.response.DroidKaigiApi
 import com.example.droidkaigi.conf2020app.data.response.TimeTable
-import io.ktor.util.KtorExperimentalAPI
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-@KtorExperimentalAPI
 class MainActivity : AppCompatActivity() {
     val state = State()
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,7 +27,6 @@ class MainActivity : AppCompatActivity() {
     }
 }
 
-@KtorExperimentalAPI
 @Model
 class State {
     val droidKaigiApi by lazy {  DroidKaigiApi }
