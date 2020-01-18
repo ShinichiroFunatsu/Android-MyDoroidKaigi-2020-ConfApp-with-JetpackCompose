@@ -1,12 +1,17 @@
 package com.example.droidkaigi.conf2020app.data.response
 
 import com.example.droidkaigi.conf2020app.BuildConfig
-import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.cio.CIO
+import io.ktor.client.features.json.JsonFeature
+import io.ktor.client.features.json.serializer.KotlinxSerializer
+import io.ktor.client.request.accept
+import io.ktor.client.request.get
+import io.ktor.client.request.url
+import io.ktor.http.ContentType
+import io.ktor.util.KtorExperimentalAPI
 import kotlinx.serialization.json.Json
-import okhttp3.MediaType
-import retrofit2.Retrofit
-import retrofit2.http.GET
-import retrofit2.http.Path
+import kotlinx.serialization.json.JsonConfiguration
 
 
 /*
@@ -23,31 +28,24 @@ release https://api.droidkaigi.jp/2020
 
 
 */
-const val url = BuildConfig.API_ENDPOINT
+const val apiEndpoint = BuildConfig.API_ENDPOINT
 
-interface DroidKaigiApi {
-
-    @GET("timetable")
-    suspend fun fetchTimeTable(): TimeTable
-
-    @GET("announcements")
-    suspend fun fetchAnnouncements(): List<Announcement>
-
-    @GET("contributors")
-    suspend fun fetchContributors(): List<Contributor>
-}
-
-class RemoteDataSource {
-    val contentType = MediaType.get("application/json")
-    val retrofit =  Retrofit.Builder()
-        .addConverterFactory(Json.asConverterFactory(contentType))
-        .baseUrl(url)
-        .build()
-    val service = retrofit.create(DroidKaigiApi::class.java)
-
-    suspend fun fetchTimeTable(): TimeTable {
-        return service.fetchTimeTable()
+@KtorExperimentalAPI
+object DroidKaigiApi {
+    private val client = HttpClient(CIO) {
+        install(JsonFeature) {
+            serializer = KotlinxSerializer(
+                Json(
+                    JsonConfiguration.Stable.copy(strictMode = false)
+                )
+            )
+        }
     }
-
-
+    private val json = Json(JsonConfiguration.Stable.copy(strictMode = false))
+    suspend fun fetchTimeTable(): TimeTable {
+        return client.get<String> {
+            url("$apiEndpoint/timetable")
+            accept(ContentType.Application.Json)
+        }.let { json.parse(TimeTable.serializer(), it) }
+    }
 }
