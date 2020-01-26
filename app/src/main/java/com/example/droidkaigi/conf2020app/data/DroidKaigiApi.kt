@@ -1,5 +1,6 @@
 package com.example.droidkaigi.conf2020app.data
 
+import android.util.Log
 import com.example.droidkaigi.conf2020app.BuildConfig
 import com.example.droidkaigi.conf2020app.data.response.TimeTable
 import com.squareup.moshi.JsonAdapter
@@ -35,7 +36,8 @@ object DroidKaigiApi {
         Client(apiEndpoint)
 
     fun fetchTimeTable(): TimeTable {
-        val payload = client.run("timetable")
+        val payload: String = client.run("timetable")
+        Log.d("abab", (payload))
         return timeTableAdapter.fromJson(payload)!!
     }
 }

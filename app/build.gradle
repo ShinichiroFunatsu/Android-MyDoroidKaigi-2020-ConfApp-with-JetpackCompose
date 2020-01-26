@@ -60,6 +60,9 @@ dependencies {
     implementation 'androidx.ui:ui-material:0.1.0-dev03'
     implementation 'androidx.ui:ui-tooling:0.1.0-dev03'
 
+    implementation "androidx.ui:ui-foundation:0.1.0-dev03"
+    implementation "androidx.ui:ui-animation:0.1.0-dev03"
+
     // data layer
     implementation "com.squareup.okhttp3:okhttp:4.3.1"
     implementation "com.squareup.moshi:moshi-kotlin:1.9.2"
