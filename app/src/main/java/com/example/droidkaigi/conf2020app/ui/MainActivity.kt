@@ -1,6 +1,7 @@
 package com.example.droidkaigi.conf2020app.ui
 
 import android.os.Bundle
+import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.Composable
 import androidx.compose.unaryPlus
@@ -10,6 +11,7 @@ import androidx.ui.material.MaterialTheme
 import androidx.ui.material.surface.Surface
 import com.example.droidkaigi.conf2020app.AppStatus
 import com.example.droidkaigi.conf2020app.Screen
+import com.example.droidkaigi.conf2020app.navigateBack
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -18,6 +20,11 @@ class MainActivity : AppCompatActivity() {
             MaterialTheme {
                 AppContent()
             }
+        }
+        onBackPressedDispatcher.addCallback {
+            navigateBack(onNoPreScreen = {
+                this.isEnabled = false; onBackPressed()
+            })
         }
     }
 }
