@@ -3,7 +3,7 @@
 Now Building
 
 - [x] setup networking.
-- [ ] design data layer for single of truth.
+- [x] design model layer for single of truth.
 - [ ] build ui.
 
 
