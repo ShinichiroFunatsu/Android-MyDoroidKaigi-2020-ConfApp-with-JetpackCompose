@@ -60,7 +60,7 @@ fun LoadingScreen() {
 
 @Composable
 fun LogoScreen() {
-    Stack {
+    Stack(modifier = Expanded) {
         aligned(alignment = Alignment.Center) {
             Text(text = "Droid Kaigi 2020")
         }
@@ -79,25 +79,28 @@ fun SessionListScreen() {
         TopAppBar(
             title = { Text(text = "DroidKaigi 2020") }
         )
-        VerticalScroller(modifier = Flexible(1f)) {
-            Column {
-                when(model.status) {
-                    SessionListModel.Status.Logo ->
-                        LogoScreen()
-                    SessionListModel.Status.Idle ->
-                        SimpleSessionList(sessions = model.sessions)
-                    SessionListModel.Status.Loading ->
-                        LoadingScreen()
-                }
+        Column {
+            when(model.status) {
+                SessionListModel.Status.Logo ->
+                    LogoScreen()
+                SessionListModel.Status.Idle ->
+                    SimpleSessionList(sessions = model.sessions)
+                SessionListModel.Status.Loading ->
+                    LoadingScreen()
             }
         }
+
     }
 }
 
 @Composable
 fun SimpleSessionList(sessions: List<UiSession>) {
-    sessions.forEach {
-        SessionSimple(it)
+    VerticalScroller {
+        Column(modifier = Expanded) {
+            sessions.forEach {
+                SessionSimple(it)
+            }
+        }
     }
 }
 
