@@ -1,7 +1,6 @@
 package com.example.droidkaigi.conf2020app.ui
 
 import com.example.droidkaigi.conf2020app.data.response.*
-import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
