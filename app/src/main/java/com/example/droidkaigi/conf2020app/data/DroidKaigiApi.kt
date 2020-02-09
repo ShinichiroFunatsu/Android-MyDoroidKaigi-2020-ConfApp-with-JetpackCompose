@@ -37,7 +37,6 @@ object DroidKaigiApi {
 
     fun fetchTimeTable(): TimeTable {
         val payload: String = client.run("timetable")
-        Log.d("abab", (payload))
         return timeTableAdapter.fromJson(payload)!!
     }
 }

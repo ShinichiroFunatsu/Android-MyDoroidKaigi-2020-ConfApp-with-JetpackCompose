@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 data class UiSession(
-    val id: String,
+    val id: SessionId,
     val title: TitleX,
     val language: String,
     val description: String?,
@@ -19,7 +19,7 @@ data class UiSession(
     val lengthInMinutes: Int,
 
     val room: Room,
-    val sessionCategoryItem: Category,
+    val sessionCategoryItem: Category?,
     val sessionType: String,
 
     val levels: List<String>,
@@ -29,15 +29,17 @@ data class UiSession(
     val asset: Asset
 )
 
+data class SessionId(val value: String)
+
 
 fun TimeTable.toUiSessions(): List<UiSession> = let { timeTable ->
     timeTable.sessions.map { session ->
         val room = timeTable.rooms.first { it.id == session.roomId }
-        val category = timeTable.categories.first { it.id == session.sessionCategoryItemId }
+        val category = timeTable.categories.firstOrNull { it.id == session.sessionCategoryItemId }
         val speakers = timeTable.speakers.filter { speaker -> session.speakers.any { id -> id == speaker.id } }
 
         UiSession(
-            id = session.id,
+            id = SessionId(session.id),
             title = session.title,
             language = session.language,
             description = session.description,
