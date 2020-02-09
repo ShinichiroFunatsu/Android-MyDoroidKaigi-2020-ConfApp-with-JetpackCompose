@@ -26,6 +26,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @Model
 class SessionListModel {
@@ -99,22 +101,65 @@ fun SessionListScreen() {
 fun SimpleSessionList(sessions: List<UiSession>) {
     VerticalScroller {
         Column(modifier = Expanded) {
-            sessions.forEach {
-                SessionSimple(it)
+//            val grouped: Map<Int, List<UiSession>> =
+//                sessions.groupBy { it.startsAt.dayOfMonth }
+//            val map: MutableMap<Int, Map<String, List<UiSession>>> = mutableMapOf()
+//            for (sessionsParDay in grouped) {
+//                val s = sessionsParDay.value
+//                val g = s.groupBy { it.startsAt }.mapKeys { entry -> entry.key.toFormatStr("HH:mm") }
+//                map[sessionsParDay.key] = g
+//            }
+//            val map = +memo {
+//                sessions.groupBy { it.endsAt.dayOfYear }
+//                    .mapKeys { parDay -> parDay.value[0].startsAt.toFormatStr("MM.dd") }
+//                    .mapValues { parDay ->
+//                        parDay.value.groupBy { it.startsAt }
+//                            .mapKeys { it.key.toFormatStr("HH:mm") }
+//                    }
+//            }
+
+            val map = sessions.groupBy { it.endsAt.dayOfYear }
+                .mapKeys { parDay -> parDay.value[0].startsAt.toFormatStr(dayFormat) }
+                .mapValues { parDay ->
+                    parDay.value.groupBy { it.startsAt }
+                        .mapKeys { it.key.toFormatStr(timeFormat) }
+                }
+            // [MM.dd] [HH:mm]
+//            sessions.forEach {
+//                SessionSimple(it)
+//            }
+            
+            map.forEach { (date: String, parDay) ->
+                Column() {
+                    Text(date) 
+                    parDay.forEach { (time, sessions) ->
+                        Text(time)
+                        sessions.forEach {
+                            SessionSimple(session = it)
+                        }
+                    }
+                }
             }
         }
     }
 }
 
 @Composable
-fun SessionSimple(session: UiSession, onClick: (() -> Unit)? = null) {
+fun SessionSimple(session: UiSession) {
+    val dateFromTo = "${session.startsAt.toFormatStr(startTimeFormat)}-${session.endsAt.toFormatStr(
+        endTimeFormat)}"
     Ripple(bounded = true) {
         Clickable(onClick = { navigateTo(Screen.Detail(session.id))}) {
-            Row(modifier = Spacing(16.dp)) {
-                Column(modifier = Flexible(1f)) {
+            Row {
+                Column(modifier = Flexible(1f) wraps Spacing(12.dp)) {
                     Text(
                         session.title.ja,
-                        style = ((+MaterialTheme.typography()).subtitle1).withOpacity(0.87f)
+                        style = ((+MaterialTheme.typography()).h6).withOpacity(0.87f)
+                    )
+                    Text(
+                        dateFromTo,
+                        modifier = Spacing(4.dp),
+                        style = ((+MaterialTheme.typography()).caption).withOpacity(0.33f)
                     )
                 }
             }
@@ -128,3 +173,12 @@ fun SessionSimple(session: UiSession, onClick: (() -> Unit)? = null) {
 fun preview() {
     LoadingScreen()
 }
+
+
+
+//fun Date.toFormatStr(formatStr: String) = SimpleDateFormat(formatStr, Locale.JAPAN).format(this)
+fun LocalDateTime.toFormatStr(fmtter: DateTimeFormatter) = this.format(fmtter)
+val startTimeFormat = DateTimeFormatter.ofPattern("M.dd HH:mm")
+val endTimeFormat =  DateTimeFormatter.ofPattern("HH:mm")
+val dayFormat = DateTimeFormatter.ofPattern("M.dd")
+val timeFormat = DateTimeFormatter.ofPattern("HH:mm")

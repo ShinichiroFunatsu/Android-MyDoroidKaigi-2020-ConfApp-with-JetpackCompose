@@ -1,8 +1,10 @@
 package com.example.droidkaigi.conf2020app.ui
 
 import com.example.droidkaigi.conf2020app.data.response.*
-import okhttp3.internal.trimSubstring
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 data class UiSession(
@@ -14,8 +16,8 @@ data class UiSession(
     val message: String?,
     val targetAudience: String,
 
-    val endsAt: Date,
-    val startsAt: Date,
+    val endsAt: LocalDateTime,
+    val startsAt: LocalDateTime,
     val lengthInMinutes: Int,
 
     val room: Room,
@@ -62,8 +64,8 @@ fun TimeTable.toUiSessions(): List<UiSession> = let { timeTable ->
             message = session.message,
             targetAudience = session.targetAudience,
 
-            endsAt = session.endsAt.toDate(),
-            startsAt = session.startsAt.toDate(),
+            endsAt = session.endsAt.toLocaleDateTime(),
+            startsAt = session.startsAt.toLocaleDateTime(),
             lengthInMinutes = session.lengthInMinutes,
 
             room = room,
@@ -83,4 +85,9 @@ fun TimeTable.toUiSessions(): List<UiSession> = let { timeTable ->
 private val dateFormat =
     SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.JAPAN)
 
+private val localDateFormat =
+    DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX")
+
 private fun String.toDate() = dateFormat.parse(this)
+private fun String.toLocaleDate() = LocalDate.parse(this, localDateFormat)
+private fun String.toLocaleDateTime() = LocalDateTime.parse(this, localDateFormat)
