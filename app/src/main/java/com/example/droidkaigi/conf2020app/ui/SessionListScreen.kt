@@ -18,7 +18,9 @@ import androidx.ui.material.ripple.Ripple
 import androidx.ui.material.withOpacity
 import androidx.ui.tooling.preview.Preview
 import com.example.droidkaigi.conf2020app.AppStatus
+import com.example.droidkaigi.conf2020app.Screen
 import com.example.droidkaigi.conf2020app.droidKaigiApi
+import com.example.droidkaigi.conf2020app.navigateTo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -107,7 +109,7 @@ fun SimpleSessionList(sessions: List<UiSession>) {
 @Composable
 fun SessionSimple(session: UiSession, onClick: (() -> Unit)? = null) {
     Ripple(bounded = true) {
-        Clickable(onClick) {
+        Clickable(onClick = { navigateTo(Screen.Detail(session.id))}) {
             Row(modifier = Spacing(16.dp)) {
                 Column(modifier = Flexible(1f)) {
                     Text(

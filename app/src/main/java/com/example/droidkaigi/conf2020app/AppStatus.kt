@@ -21,7 +21,7 @@ sealed class Screen {
     data class Detail(val sessionId: SessionId) : Screen()
 }
 
-fun SessionListModel.navigateTo(destination: Screen) {
+fun navigateTo(destination: Screen) {
     AppStatus.currentScreen = destination
 }
 
