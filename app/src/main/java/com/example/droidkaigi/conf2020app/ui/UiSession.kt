@@ -1,6 +1,7 @@
 package com.example.droidkaigi.conf2020app.ui
 
 import com.example.droidkaigi.conf2020app.data.response.*
+import okhttp3.internal.trimSubstring
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -26,7 +27,22 @@ data class UiSession(
     val isPlenumSession: Boolean,
     val isServiceSession: Boolean,
     val asset: Asset
-)
+) {
+    fun toPrintString() =
+        """
+# ${room.name.ja} ($lengthInMinutes min)
+            
+title: ${title.ja} ($language)
+            
+description:
+ $description
+
+==========================
+
+message: $message
+            
+        """.trimIndent()
+}
 
 data class SessionId(val value: String)
 
