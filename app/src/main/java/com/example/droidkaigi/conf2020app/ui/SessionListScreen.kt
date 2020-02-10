@@ -52,25 +52,6 @@ class SessionListModel {
         }
     }
 }
-
-@Composable
-fun LoadingScreen() {
-    Stack(modifier = Expanded) {
-        aligned(alignment = Alignment.Center) {
-            Text(text = "Loading")
-        }
-    }
-}
-
-@Composable
-fun LogoScreen() {
-    Stack(modifier = Expanded) {
-        aligned(alignment = Alignment.Center) {
-            Text(text = "Droid Kaigi 2020")
-        }
-    }
-}
-
 @Composable
 fun SessionListScreen() {
     val model = +memo { SessionListModel() }
@@ -101,35 +82,25 @@ fun SessionListScreen() {
 fun SimpleSessionList(sessions: List<UiSession>) {
     VerticalScroller {
         Column(modifier = Expanded) {
-//            val grouped: Map<Int, List<UiSession>> =
-//                sessions.groupBy { it.startsAt.dayOfMonth }
-//            val map: MutableMap<Int, Map<String, List<UiSession>>> = mutableMapOf()
-//            for (sessionsParDay in grouped) {
-//                val s = sessionsParDay.value
-//                val g = s.groupBy { it.startsAt }.mapKeys { entry -> entry.key.toFormatStr("HH:mm") }
-//                map[sessionsParDay.key] = g
-//            }
-//            val map = +memo {
-//                sessions.groupBy { it.endsAt.dayOfYear }
-//                    .mapKeys { parDay -> parDay.value[0].startsAt.toFormatStr("MM.dd") }
-//                    .mapValues { parDay ->
-//                        parDay.value.groupBy { it.startsAt }
-//                            .mapKeys { it.key.toFormatStr("HH:mm") }
-//                    }
-//            }
 
-            val map = sessions.groupBy { it.endsAt.dayOfYear }
-                .mapKeys { parDay -> parDay.value[0].startsAt.toFormatStr(dayFormat) }
-                .mapValues { parDay ->
-                    parDay.value.groupBy { it.startsAt }
-                        .mapKeys { it.key.toFormatStr(timeFormat) }
-                }
-            // [MM.dd] [HH:mm]
-//            sessions.forEach {
-//                SessionSimple(it)
-//            }
-            
-            map.forEach { (date: String, parDay) ->
+            // [MM.dd]
+            //     [HH:mm]
+            //        session A
+            //        session B
+            // [MM.dd]
+            //     [HH:mm]
+            //        session C
+            //        session D
+
+            val dayParStartTimePerSessions: Map<String, Map<String, List<UiSession>>> =
+                sessions.groupBy { it.endsAt.dayOfYear }
+                    .mapKeys { parDay -> parDay.value[0].startsAt.toFormatStr(dayFormat) }
+                    .mapValues { parDay ->
+                        parDay.value.groupBy { it.startsAt }
+                            .mapKeys { it.key.toFormatStr(timeFormat) }
+                    }
+
+            dayParStartTimePerSessions.forEach { (date: String, parDay) ->
                 Column() {
                     Text(date) 
                     parDay.forEach { (time, sessions) ->
@@ -167,14 +138,30 @@ fun SessionSimple(session: UiSession) {
     }
 }
 
+@Composable
+fun LoadingScreen() {
+    Stack(modifier = Expanded) {
+        aligned(alignment = Alignment.Center) {
+            Text(text = "Loading")
+        }
+    }
+}
+
+@Composable
+fun LogoScreen() {
+    Stack(modifier = Expanded) {
+        aligned(alignment = Alignment.Center) {
+            Text(text = "Droid Kaigi 2020")
+        }
+    }
+}
+
 
 @Preview
 @Composable
 fun preview() {
     LoadingScreen()
 }
-
-
 
 //fun Date.toFormatStr(formatStr: String) = SimpleDateFormat(formatStr, Locale.JAPAN).format(this)
 fun LocalDateTime.toFormatStr(fmtter: DateTimeFormatter) = this.format(fmtter)
