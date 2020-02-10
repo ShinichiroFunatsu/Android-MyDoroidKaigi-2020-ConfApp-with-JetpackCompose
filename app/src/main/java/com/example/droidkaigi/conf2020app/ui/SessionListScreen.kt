@@ -30,8 +30,9 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 @Model
-class SessionListModel {
-    var status: Status = Status.Logo
+class SessionListModel(
+        var status: Status
+) {
     val sessions: ModelList<UiSession>
         get() = AppStatus.sessions
 
@@ -43,10 +44,12 @@ class SessionListModel {
 
     fun fetchData() {
         CoroutineScope(Dispatchers.Main).launch {
-            launch(Dispatchers.Unconfined) { delay(2000)}
+            delay(2000)
+            status = Status.Loading
             val new = withContext(Dispatchers.IO) {
                 droidKaigiApi.fetchTimeTable().toUiSessions()
             }
+            sessions.clear()
             sessions.addAll(new)
             status = Status.Idle
         }
@@ -54,11 +57,16 @@ class SessionListModel {
 }
 @Composable
 fun SessionListScreen() {
-    val model = +memo { SessionListModel() }
-
-    +onActive {
-        model.fetchData()
+    val model = +memo {
+        SessionListModel(SessionListModel.Status.Logo).apply {
+            fetchData()
+        }
     }
+
+// no need fetch on each active
+//    +onActive {
+//        model.fetchData()
+//    }
 
     Column {
         TopAppBar(
@@ -77,6 +85,12 @@ fun SessionListScreen() {
 
     }
 }
+
+fun LocalDateTime.toFormatStr(formatter: DateTimeFormatter): String = this.format(formatter)
+val startTimeFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
+val endTimeFormat: DateTimeFormatter =  DateTimeFormatter.ofPattern("HH:mm")
+val dayFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("M.dd")
+val hourAndMinutesFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 
 @Composable
 fun SimpleSessionList(sessions: List<UiSession>) {
@@ -97,7 +111,7 @@ fun SimpleSessionList(sessions: List<UiSession>) {
                     .mapKeys { parDay -> parDay.value[0].startsAt.toFormatStr(dayFormat) }
                     .mapValues { parDay ->
                         parDay.value.groupBy { it.startsAt }
-                            .mapKeys { it.key.toFormatStr(timeFormat) }
+                            .mapKeys { it.key.toFormatStr(hourAndMinutesFormat) }
                     }
 
             dayParStartTimePerSessions.forEach { (date: String, parDay) ->
@@ -163,9 +177,3 @@ fun preview() {
     LoadingScreen()
 }
 
-//fun Date.toFormatStr(formatStr: String) = SimpleDateFormat(formatStr, Locale.JAPAN).format(this)
-fun LocalDateTime.toFormatStr(fmtter: DateTimeFormatter) = this.format(fmtter)
-val startTimeFormat = DateTimeFormatter.ofPattern("M.dd HH:mm")
-val endTimeFormat =  DateTimeFormatter.ofPattern("HH:mm")
-val dayFormat = DateTimeFormatter.ofPattern("M.dd")
-val timeFormat = DateTimeFormatter.ofPattern("HH:mm")
