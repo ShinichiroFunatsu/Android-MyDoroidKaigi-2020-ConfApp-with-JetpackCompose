@@ -86,7 +86,7 @@ fun SessionListScreen() {
     }
 }
 
-fun LocalDateTime.toFormatStr(formatter: DateTimeFormatter): String = this.format(formatter)
+fun LocalDateTime.toFString(formatter: DateTimeFormatter): String = this.format(formatter)
 val startTimeFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 val endTimeFormat: DateTimeFormatter =  DateTimeFormatter.ofPattern("HH:mm")
 val dayFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("M.dd")
@@ -108,19 +108,29 @@ fun SimpleSessionList(sessions: List<UiSession>) {
 
             val dayParStartTimePerSessions: Map<String, Map<String, List<UiSession>>> =
                 sessions.groupBy { it.endsAt.dayOfYear }
-                    .mapKeys { parDay -> parDay.value[0].startsAt.toFormatStr(dayFormat) }
+                    .mapKeys { parDay -> parDay.value[0].startsAt.toFString(dayFormat) }
                     .mapValues { parDay ->
                         parDay.value.groupBy { it.startsAt }
-                            .mapKeys { it.key.toFormatStr(hourAndMinutesFormat) }
+                            .mapKeys { it.key.toFString(hourAndMinutesFormat) }
                     }
 
             dayParStartTimePerSessions.forEach { (date: String, parDay) ->
-                Column() {
-                    Text(date) 
-                    parDay.forEach { (time, sessions) ->
-                        Text(time)
-                        sessions.forEach {
-                            SessionSimple(session = it)
+                Row() {
+                    WidthSpacer(width = 16.dp)
+
+                    Column() {
+                        Text(
+                            text = date,
+                            modifier = ExpandedWidth wraps Spacing(8.dp),
+                            style = ((+MaterialTheme.typography()).h3).withOpacity(0.33f)
+                        )
+                        parDay.forEach { (time, sessions) ->
+                            Text(
+                                text = time,
+                                modifier = Spacing(12.dp),
+                                style = ((+MaterialTheme.typography()).h6).withOpacity(0.87f)
+                            )
+                            SessionsSection(sessions)
                         }
                     }
                 }
@@ -128,18 +138,37 @@ fun SimpleSessionList(sessions: List<UiSession>) {
         }
     }
 }
+@Composable
+fun SessionsSection(sessions: List<UiSession>) {
+    Row() {
+        Column() {
+            sessions.forEach {
+                SessionSimple(session = it)
+            }
+        }
+    }
+}
 
 @Composable
 fun SessionSimple(session: UiSession) {
-    val dateFromTo = "${session.startsAt.toFormatStr(startTimeFormat)}-${session.endsAt.toFormatStr(
-        endTimeFormat)}"
+    val dateFromTo = "%s-%s".format(
+        session.startsAt.toFString(startTimeFormat),
+        session.endsAt.toFString(endTimeFormat)
+    )
+
     Ripple(bounded = true) {
-        Clickable(onClick = { navigateTo(Screen.Detail(session.id))}) {
-            Row {
-                Column(modifier = Flexible(1f) wraps Spacing(12.dp)) {
+        Clickable(onClick = { navigateTo(Screen.Detail(session.id)) }) {
+            Row(modifier = Spacing(8.dp)) {
+                WidthSpacer(width = 80.dp)
+                Column(modifier = Flexible(1f)) {
                     Text(
-                        session.title.ja,
-                        style = ((+MaterialTheme.typography()).h6).withOpacity(0.87f)
+                        session.titleText,
+                        style = ((+MaterialTheme.typography()).subtitle1).withOpacity(0.87f)
+                    )
+                    Text(
+                        session.roomNameText,
+                        modifier = Spacing(4.dp),
+                        style = ((+MaterialTheme.typography()).caption).withOpacity(0.33f)
                     )
                     Text(
                         dateFromTo,

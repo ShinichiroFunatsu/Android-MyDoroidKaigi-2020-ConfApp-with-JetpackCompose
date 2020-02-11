@@ -29,9 +29,15 @@ data class UiSession(
     val isPlenumSession: Boolean,
     val isServiceSession: Boolean,
     val asset: Asset
-) {
-    fun toPrintString() =
-        """
+)
+val UiSession.titleText: String
+    get() = title.ja
+val UiSession.roomNameText: String
+    get() = room.name.ja
+
+
+
+fun UiSession.toPrintString() = """
 # ${room.name.ja} ($lengthInMinutes min)
             
 title: ${title.ja} ($language)
@@ -44,7 +50,6 @@ description:
 message: $message
             
         """.trimIndent()
-}
 
 data class SessionId(val value: String)
 
