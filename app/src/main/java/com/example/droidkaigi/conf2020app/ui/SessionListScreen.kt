@@ -113,6 +113,7 @@ fun SimpleSessionList(sessions: List<UiSession>) {
                         parDay.value.groupBy { it.startsAt }
                             .mapKeys { it.key.toFString(hourAndMinutesFormat) }
                     }
+            val typography = +MaterialTheme.typography()
 
             dayParStartTimePerSessions.forEach { (date: String, parDay) ->
                 Row() {
@@ -122,13 +123,13 @@ fun SimpleSessionList(sessions: List<UiSession>) {
                         Text(
                             text = date,
                             modifier = ExpandedWidth wraps Spacing(8.dp),
-                            style = ((+MaterialTheme.typography()).h3).withOpacity(0.33f)
+                            style = typography.h3.withOpacity(0.33f)
                         )
                         parDay.forEach { (time, sessions) ->
                             Text(
                                 text = time,
                                 modifier = Spacing(12.dp),
-                                style = ((+MaterialTheme.typography()).h6).withOpacity(0.87f)
+                                style = typography.h6.withOpacity(0.87f)
                             )
                             SessionsSection(sessions)
                         }
@@ -155,6 +156,7 @@ fun SessionSimple(session: UiSession) {
         session.startsAt.toFString(startTimeFormat),
         session.endsAt.toFString(endTimeFormat)
     )
+    val typography = +MaterialTheme.typography()
 
     Ripple(bounded = true) {
         Clickable(onClick = { navigateTo(Screen.Detail(session.id)) }) {
@@ -163,17 +165,17 @@ fun SessionSimple(session: UiSession) {
                 Column(modifier = Flexible(1f)) {
                     Text(
                         session.titleText,
-                        style = ((+MaterialTheme.typography()).subtitle1).withOpacity(0.87f)
+                        style = typography.subtitle1.withOpacity(0.87f)
                     )
                     Text(
                         session.roomNameText,
                         modifier = Spacing(4.dp),
-                        style = ((+MaterialTheme.typography()).caption).withOpacity(0.33f)
+                        style = typography.caption.withOpacity(0.33f)
                     )
                     Text(
                         dateFromTo,
                         modifier = Spacing(4.dp),
-                        style = ((+MaterialTheme.typography()).caption).withOpacity(0.33f)
+                        style = typography.caption.withOpacity(0.33f)
                     )
                 }
             }
