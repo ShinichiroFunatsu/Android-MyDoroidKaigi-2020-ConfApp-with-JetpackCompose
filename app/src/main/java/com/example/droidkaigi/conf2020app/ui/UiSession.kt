@@ -1,5 +1,6 @@
 package com.example.droidkaigi.conf2020app.ui
 
+import androidx.ui.graphics.Color
 import com.example.droidkaigi.conf2020app.data.response.*
 import java.text.SimpleDateFormat
 import java.time.LocalDate
@@ -21,6 +22,7 @@ data class UiSession(
     val lengthInMinutes: Int,
 
     val room: Room,
+    val roomColor: Color,
     val sessionCategoryItem: Category?,
     val sessionType: String,
 
@@ -74,6 +76,16 @@ fun TimeTable.toUiSessions(): List<UiSession> = let { timeTable ->
             lengthInMinutes = session.lengthInMinutes,
 
             room = room,
+            roomColor = when(room.name.ja) {
+                "App bars" -> RoomColors.appBars
+                "Backdrop" -> RoomColors.backDrop
+                "Cards" -> RoomColors.cards
+                "Dialogs" -> RoomColors.dialogs
+                "Pickers" -> RoomColors.pickers
+                "Sliders" -> RoomColors.slides
+                "Tabs" -> RoomColors.tabs
+                else -> RoomColors.empty
+            },
             sessionCategoryItem = category,
             sessionType = session.sessionType,
 
