@@ -12,3 +12,6 @@ Acceptance conditions
 2. bookmarking.
 3. list bookmarked sessions. (or filtering)
 4. hight-lighting current sessions.
+
+
+<img src="https://user-images.githubusercontent.com/43738854/74590621-6548d100-5053-11ea-945c-caf7b7f3bf61.png" width="380px">
