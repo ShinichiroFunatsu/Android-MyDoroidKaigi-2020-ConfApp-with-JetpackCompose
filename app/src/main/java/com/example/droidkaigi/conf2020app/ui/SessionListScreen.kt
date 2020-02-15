@@ -19,6 +19,7 @@ import androidx.ui.material.Typography
 import androidx.ui.material.ripple.Ripple
 import androidx.ui.material.surface.Card
 import androidx.ui.material.withOpacity
+import androidx.ui.text.font.FontWeight
 import androidx.ui.tooling.preview.Preview
 import com.example.droidkaigi.conf2020app.AppStatus
 import com.example.droidkaigi.conf2020app.Screen
@@ -131,23 +132,27 @@ fun SimpleSessionList(sessions: List<UiSession>) {
 
                     WidthSpacer(width = 8.dp)
 
-                    Column() {
-                        Row() {
+                    Column {
+                        
+                        HeightSpacer(height = 8.dp)
+
+                        Row(modifier = Spacing(16.dp)) {
                             Text(
                                 text = dateStrs.first,
-                                modifier = Spacing(8.dp),
-                                style = typography.h5
-                                    .withOpacity(0.87f)
+                                style = typography.h5.copy(
+                                    fontWeight = FontWeight.W500
+                                ).withOpacity(0.66f)
                             )
                             Text(
                                 text = dateStrs.second,
-                                modifier = Spacing(8.dp) wraps Gravity.Bottom,
-                                style = typography.subtitle1
-                                    .withOpacity(0.33f)
+                                modifier = Gravity.Bottom wraps Spacing(left = 16.dp, bottom = 4.dp),
+                                style = typography.subtitle1.copy(
+                                    fontWeight = FontWeight.W500
+                                ).withOpacity(0.22f)
                             )
                         }
-                        parDay.forEach { (time, sessions) ->
 
+                        parDay.forEach { (time, sessions) ->
                             SessionsSection(time, typography, sessions)
                         }
                     }
@@ -158,11 +163,12 @@ fun SimpleSessionList(sessions: List<UiSession>) {
 }
 @Composable
 fun SessionsSection(time: String, typography: Typography, sessions: List<UiSession>) {
+
     Text(
         text = time,
         modifier = Spacing(left = 12.dp),
         style = typography.subtitle2
-            .withOpacity(0.33f)
+            .withOpacity(0.22f)
     )
 
     Row() {
