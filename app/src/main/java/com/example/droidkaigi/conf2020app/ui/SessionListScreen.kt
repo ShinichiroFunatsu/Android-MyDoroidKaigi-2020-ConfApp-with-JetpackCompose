@@ -191,7 +191,7 @@ fun SessionSimple(session: UiSession) {
     )
     val typography = +MaterialTheme.typography()
     val widthRate: Float = when (session.lengthInMinutes) {
-        20 -> 0.6f
+        20 -> 0.65f
         40 -> 0.93f
         60 -> 0.99f
         else -> 0.99f
