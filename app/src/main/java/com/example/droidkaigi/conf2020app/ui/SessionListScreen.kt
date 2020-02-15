@@ -15,6 +15,7 @@ import androidx.ui.graphics.Color
 import androidx.ui.layout.*
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.TopAppBar
+import androidx.ui.material.Typography
 import androidx.ui.material.ripple.Ripple
 import androidx.ui.material.surface.Card
 import androidx.ui.material.withOpacity
@@ -70,13 +71,11 @@ fun SessionListScreen() {
 //    +onActive {
 //        model.fetchData()
 //    }
-    val typography = +MaterialTheme.typography()
+//    val typography = +MaterialTheme.typography()
     Column {
         TopAppBar(
             title = {
-                Text(
-                    text = "DroidKaigi 2020"
-                )
+                Text(text = "DroidKaigi 2020")
             }
         )
         Column {
@@ -97,7 +96,7 @@ fun LocalDateTime.toFString(formatter: DateTimeFormatter): String = this.format(
 val dayOfWeek: DateTimeFormatter = DateTimeFormatter.ofPattern("EEEE", Locale.US)
 val startTimeFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 val endTimeFormat: DateTimeFormatter =  DateTimeFormatter.ofPattern("HH:mm")
-val dayFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("M.dd")
+val dayFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy", Locale.US)
 val hourAndMinutesFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 
 @Composable
@@ -114,34 +113,42 @@ fun SimpleSessionList(sessions: List<UiSession>) {
             //        session C
             //        session D
 
-            val dayParStartTimePerSessions: Map<String, Map<String, List<UiSession>>> =
+            val dayParStartTimePerSessions: Map<Pair<String, String>, Map<String, List<UiSession>>> =
                 sessions.groupBy { it.endsAt.dayOfYear }
-                    .mapKeys { parDay -> parDay.value[0].startsAt.toFString(dayFormat) }
+                    .mapKeys { parDay ->
+                        parDay.value[0].startsAt.let {
+                            it.toFString(dayOfWeek) to it.toFString(dayFormat)
+                        }
+                    }
                     .mapValues { parDay ->
                         parDay.value.groupBy { it.startsAt }
                             .mapKeys { it.key.toFString(hourAndMinutesFormat) }
                     }
             val typography = +MaterialTheme.typography()
 
-            dayParStartTimePerSessions.forEach { (date: String, parDay) ->
+            dayParStartTimePerSessions.forEach { (dateStrs: Pair<String, String>, parDay) ->
                 Row() {
+
                     WidthSpacer(width = 8.dp)
 
                     Column() {
-                        Text(
-                            text = date,
-                            modifier = ExpandedWidth wraps Spacing(8.dp),
-                            style = typography.h3
-                                .withOpacity(0.33f)
-                        )
-                        parDay.forEach { (time, sessions) ->
+                        Row() {
                             Text(
-                                text = time,
-                                modifier = Spacing(12.dp),
-                                style = typography.subtitle2
+                                text = dateStrs.first,
+                                modifier = Spacing(8.dp),
+                                style = typography.h5
+                                    .withOpacity(0.87f)
+                            )
+                            Text(
+                                text = dateStrs.second,
+                                modifier = Spacing(8.dp) wraps Gravity.Bottom,
+                                style = typography.subtitle1
                                     .withOpacity(0.33f)
                             )
-                            SessionsSection(sessions)
+                        }
+                        parDay.forEach { (time, sessions) ->
+
+                            SessionsSection(time, typography, sessions)
                         }
                     }
                 }
@@ -150,10 +157,17 @@ fun SimpleSessionList(sessions: List<UiSession>) {
     }
 }
 @Composable
-fun SessionsSection(sessions: List<UiSession>) {
+fun SessionsSection(time: String, typography: Typography, sessions: List<UiSession>) {
+    Text(
+        text = time,
+        modifier = Spacing(left = 12.dp),
+        style = typography.subtitle2
+            .withOpacity(0.33f)
+    )
+
     Row() {
 
-        WidthSpacer(width = 80.dp)
+        WidthSpacer(width = 60.dp)
 
         Column() {
             sessions.forEach {
