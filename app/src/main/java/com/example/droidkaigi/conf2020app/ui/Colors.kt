@@ -10,9 +10,12 @@ object RoomColors {
     val backDrop: Color = Color(0xFFFFB72B)
     val cards: Color = Color(0xFF865FBF)
     val dialogs: Color = Color(0xFFEB4886)
+    val exhibition: Color = Color(0xFFB6B6B6)
     val slides: Color = Color(0xFFFE8737)
     val pickers: Color = Color(0xFF47C5F3)
 }
+
+// #34384F
 
 //val lightThemeColors = ColorPalette(
 //    primary = Color(0xFFFFFFFF),

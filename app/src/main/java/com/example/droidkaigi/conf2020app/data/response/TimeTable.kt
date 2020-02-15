@@ -66,7 +66,7 @@ data class Session(
     val language: String,
     val lengthInMinutes: Int,
     val levels: List<String>,
-    val message: String?,
+    val message: Message?,
     val roomId: Int,
     val sessionCategoryItemId: Int,
     val sessionType: String,
@@ -74,6 +74,11 @@ data class Session(
     val startsAt: String,
     val targetAudience: String,
     val title: TitleX
+)
+
+data class Message(
+    val en: String,
+    val ja: String
 )
 
 data class Asset(

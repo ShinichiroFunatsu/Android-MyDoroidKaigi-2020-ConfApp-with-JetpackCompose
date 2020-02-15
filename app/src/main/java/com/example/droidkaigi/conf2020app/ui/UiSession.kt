@@ -68,7 +68,7 @@ fun TimeTable.toUiSessions(): List<UiSession> = let { timeTable ->
             language = session.language,
             description = session.description,
             speakers = speakers,
-            message = session.message,
+            message = session.message?.ja,
             targetAudience = session.targetAudience,
 
             endsAt = session.endsAt.toLocaleDateTime(),
@@ -81,6 +81,7 @@ fun TimeTable.toUiSessions(): List<UiSession> = let { timeTable ->
                 "Backdrop" -> RoomColors.backDrop
                 "Cards" -> RoomColors.cards
                 "Dialogs" -> RoomColors.dialogs
+                "Exhibition" -> RoomColors.exhibition
                 "Pickers" -> RoomColors.pickers
                 "Sliders" -> RoomColors.slides
                 "Tabs" -> RoomColors.tabs
