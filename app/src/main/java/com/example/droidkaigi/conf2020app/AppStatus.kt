@@ -17,6 +17,11 @@ object AppStatus {
     val stack = Stack<Screen>().apply {
         this.push(Screen.SessionList)
     }
+
+    fun updateSessions(new: List<UiSession>) {
+        sessions.clear()
+        sessions.addAll(new)
+    }
 }
 
 sealed class Screen {
@@ -38,5 +43,3 @@ fun navigateBack(onNoPreScreen: () -> Unit) {
         }
     }
 }
-
-val droidKaigiApi by lazy { DroidKaigiApi }

@@ -1,11 +1,8 @@
-package com.example.droidkaigi.conf2020app.ui
+package com.example.droidkaigi.conf2020app.ui.sessions
 
-import android.util.Log
 import androidx.compose.Composable
 import androidx.compose.Model
-import androidx.compose.frames.ModelList
 import androidx.compose.memo
-import androidx.compose.onActive
 import androidx.compose.unaryPlus
 import androidx.ui.core.*
 import androidx.ui.foundation.Clickable
@@ -21,46 +18,18 @@ import androidx.ui.material.surface.Card
 import androidx.ui.material.withOpacity
 import androidx.ui.text.font.FontWeight
 import androidx.ui.tooling.preview.Preview
-import com.example.droidkaigi.conf2020app.AppStatus
-import com.example.droidkaigi.conf2020app.Screen
-import com.example.droidkaigi.conf2020app.droidKaigiApi
-import com.example.droidkaigi.conf2020app.navigateTo
-import com.example.droidkaigi.conf2020app.ui.SessionListModel.Status as UiStatus
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.withContext
+import com.example.droidkaigi.conf2020app.*
+import com.example.droidkaigi.conf2020app.ui.UiSession
+import com.example.droidkaigi.conf2020app.ui.roomNameText
+import com.example.droidkaigi.conf2020app.ui.titleText
+import com.example.droidkaigi.conf2020app.ui.sessions.SessionListModel.Status as UiStatus
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 
-@Model
-class SessionListModel(
-        var status: Status
-) {
-    val sessions: ModelList<UiSession>
-        get() = AppStatus.sessions
+typealias GroupedUiSessions =  Map<Pair<String, String>, Map<String, List<UiSession>>>
 
-    sealed class Status {
-        object Logo: Status()
-        object Loading: Status()
-        object Idle: Status()
-    }
 
-    fun fetchData() {
-        CoroutineScope(Dispatchers.Main).launch {
-            delay(2000)
-            status = Status.Loading
-            val new = withContext(Dispatchers.IO) {
-                droidKaigiApi.fetchTimeTable().toUiSessions()
-            }
-            sessions.clear()
-            sessions.addAll(new)
-            status = Status.Idle
-        }
-    }
-}
 @Composable
 fun SessionListScreen() {
     val model = +memo {
@@ -83,7 +52,7 @@ fun SessionListScreen() {
         Column {
             when(model.status) {
                 UiStatus.Logo -> LogoScreen()
-                UiStatus.Idle -> SimpleSessionList(model.sessions)
+                UiStatus.Idle -> SimpleSessionList(model.uiSessions)
                 UiStatus.Loading -> LoadingScreen()
             }
         }
@@ -98,7 +67,7 @@ val dayFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy", L
 val hourAndMinutesFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 
 @Composable
-fun SimpleSessionList(sessions: List<UiSession>) {
+fun SimpleSessionList(groupedUiSessions: GroupedUiSessions) {
     VerticalScroller {
         Column(modifier = Expanded) {
 
@@ -111,20 +80,9 @@ fun SimpleSessionList(sessions: List<UiSession>) {
             //        session C
             //        session D
 
-            val dayParStartTimePerSessions: Map<Pair<String, String>, Map<String, List<UiSession>>> =
-                sessions.groupBy { it.endsAt.dayOfYear }
-                    .mapKeys { parDay ->
-                        parDay.value[0].startsAt.let {
-                            it.toFString(dayOfWeek) to it.toFString(dayFormat)
-                        }
-                    }
-                    .mapValues { parDay ->
-                        parDay.value.groupBy { it.startsAt }
-                            .mapKeys { it.key.toFString(hourAndMinutesFormat) }
-                    }
             val typography = +MaterialTheme.typography()
 
-            dayParStartTimePerSessions.forEach { (dateStrs: Pair<String, String>, parDay) ->
+            groupedUiSessions.forEach { (dateStrs: Pair<String, String>, parDay) ->
                 Row() {
 
                     WidthSpacer(width = 8.dp)
@@ -252,7 +210,6 @@ fun LogoScreen() {
         }
     }
 }
-
 
 @Preview
 @Composable

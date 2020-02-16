@@ -12,6 +12,7 @@ import androidx.ui.material.surface.Surface
 import com.example.droidkaigi.conf2020app.AppStatus
 import com.example.droidkaigi.conf2020app.Screen
 import com.example.droidkaigi.conf2020app.navigateBack
+import com.example.droidkaigi.conf2020app.ui.sessions.SessionListScreen
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
