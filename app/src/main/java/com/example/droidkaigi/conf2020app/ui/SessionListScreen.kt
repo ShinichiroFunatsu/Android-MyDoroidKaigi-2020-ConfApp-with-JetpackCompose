@@ -25,6 +25,7 @@ import com.example.droidkaigi.conf2020app.AppStatus
 import com.example.droidkaigi.conf2020app.Screen
 import com.example.droidkaigi.conf2020app.droidKaigiApi
 import com.example.droidkaigi.conf2020app.navigateTo
+import com.example.droidkaigi.conf2020app.ui.SessionListModel.Status as UiStatus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -63,7 +64,7 @@ class SessionListModel(
 @Composable
 fun SessionListScreen() {
     val model = +memo {
-        SessionListModel(SessionListModel.Status.Logo).apply {
+        SessionListModel(UiStatus.Logo).apply {
             fetchData()
         }
     }
@@ -81,15 +82,11 @@ fun SessionListScreen() {
         )
         Column {
             when(model.status) {
-                SessionListModel.Status.Logo ->
-                    LogoScreen()
-                SessionListModel.Status.Idle ->
-                    SimpleSessionList(sessions = model.sessions)
-                SessionListModel.Status.Loading ->
-                    LoadingScreen()
+                UiStatus.Logo -> LogoScreen()
+                UiStatus.Idle -> SimpleSessionList(model.sessions)
+                UiStatus.Loading -> LoadingScreen()
             }
         }
-
     }
 }
 
@@ -233,9 +230,8 @@ fun SessionSimple(session: UiSession) {
                 }
             }
         }
-        Column(modifier = Flexible(1-widthRate)) {
-
-        }
+        // TODO change guideline of ConstraintLayout
+        Column(modifier = Flexible(1-widthRate)) { }
     }
 }
 
