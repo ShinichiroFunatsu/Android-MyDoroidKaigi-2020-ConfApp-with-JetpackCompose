@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.Composable
-import androidx.compose.unaryPlus
 import androidx.ui.animation.Crossfade
 import androidx.ui.core.setContent
 import androidx.ui.material.MaterialTheme
@@ -33,7 +32,7 @@ class MainActivity : AppCompatActivity() {
 @Composable
 fun AppContent() {
     Crossfade(AppStatus.currentScreen) { screen ->
-        Surface(color = (+MaterialTheme.colors()).background) {
+        Surface(color = MaterialTheme.colors().background) {
             when (screen) {
                 is Screen.SessionList -> SessionListScreen()
                 is Screen.Detail -> DetailScreen(sessionId = screen.sessionId)
