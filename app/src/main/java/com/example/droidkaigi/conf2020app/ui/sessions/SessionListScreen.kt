@@ -10,7 +10,9 @@ import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.graphics.Color
 import androidx.ui.layout.*
 import androidx.ui.layout.LayoutAlign.Bottom
-import androidx.ui.material.*
+import androidx.ui.material.Emphasis
+import androidx.ui.material.ProvideEmphasis
+import androidx.ui.material.TopAppBar
 import androidx.ui.material.ripple.Ripple
 import androidx.ui.material.surface.Card
 import androidx.ui.text.font.FontWeight
@@ -18,6 +20,8 @@ import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
 import com.example.droidkaigi.conf2020app.*
 import com.example.droidkaigi.conf2020app.ui.UiSession
+import com.example.droidkaigi.conf2020app.ui.material.MaterialTheme
+import com.example.droidkaigi.conf2020app.ui.material.Typography
 import com.example.droidkaigi.conf2020app.ui.roomNameText
 import com.example.droidkaigi.conf2020app.ui.titleText
 import com.example.droidkaigi.conf2020app.ui.sessions.SessionListModel.Status as UiStatus
@@ -107,7 +111,7 @@ fun SimpleSessionList(groupedUiSessions: GroupedUiSessions) {
                             ProvideEmphasis(emphasis = WeakEmphasis) {
                                 Text(
                                     text = dateStrs.second,
-                                    modifier = Bottom + LayoutPadding(left = 16.dp, bottom = 4.dp),
+                                    modifier = Bottom + LayoutPadding(left = 16.dp),
                                     style = typography.subtitle1.copy(
                                         fontWeight = FontWeight.W500
                                     )

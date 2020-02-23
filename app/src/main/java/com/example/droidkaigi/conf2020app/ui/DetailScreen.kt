@@ -6,10 +6,10 @@ import androidx.ui.foundation.VerticalScroller
 import androidx.ui.layout.Column
 import androidx.ui.layout.LayoutHeight
 import androidx.ui.layout.LayoutPadding
-import androidx.ui.material.MaterialTheme
 import androidx.ui.material.TopAppBar
 import androidx.ui.unit.dp
 import com.example.droidkaigi.conf2020app.AppStatus
+import com.example.droidkaigi.conf2020app.ui.material.MaterialTheme
 
 
 @Composable
