@@ -1,15 +1,15 @@
 package com.example.droidkaigi.conf2020app.ui
 
 import androidx.compose.Composable
-import androidx.compose.unaryPlus
 import androidx.ui.core.Text
-import androidx.ui.core.dp
 import androidx.ui.foundation.VerticalScroller
 import androidx.ui.layout.Column
-import androidx.ui.layout.Spacing
-import androidx.ui.material.MaterialTheme
+import androidx.ui.layout.LayoutHeight
+import androidx.ui.layout.LayoutPadding
 import androidx.ui.material.TopAppBar
+import androidx.ui.unit.dp
 import com.example.droidkaigi.conf2020app.AppStatus
+import com.example.droidkaigi.conf2020app.ui.material.MaterialTheme
 
 
 @Composable
@@ -26,9 +26,9 @@ fun DetailScreen(
                 Text(text = "Detail")
             }
         )
-        VerticalScroller(modifier = Flexible(1f) wraps Spacing(8.dp)) {
+        VerticalScroller(modifier = LayoutHeight.Fill + LayoutPadding(8.dp)) {
             Column {
-                Text(text = uiSession.toPrintString(), style = (+MaterialTheme.typography()).body2)
+                Text(text = uiSession.toPrintString(), style = MaterialTheme.typography().body2)
             }
         }
     }
