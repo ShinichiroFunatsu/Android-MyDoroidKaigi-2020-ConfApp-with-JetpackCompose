@@ -111,7 +111,7 @@ fun SimpleSessionList(groupedUiSessions: GroupedUiSessions) {
                             ProvideEmphasis(emphasis = WeakEmphasis) {
                                 Text(
                                     text = dateStrs.second,
-                                    modifier = Bottom + LayoutPadding(left = 16.dp),
+                                    modifier = LayoutGravity.Bottom + LayoutPadding(left = 16.dp, bottom = 4.dp),
                                     style = typography.subtitle1.copy(
                                         fontWeight = FontWeight.W500
                                     )
@@ -212,7 +212,7 @@ fun SessionSimple(session: UiSession) {
 @Composable
 fun LoadingScreen() {
     Stack(modifier = LayoutSize.Fill) {
-        Box(gravity = ContentGravity.Center) {
+        Box(LayoutGravity.Center) {
             Text(text = "Loading")
         }
     }
@@ -221,7 +221,7 @@ fun LoadingScreen() {
 @Composable
 fun LogoScreen() {
     Stack(modifier = LayoutSize.Fill) {
-        Box(gravity = ContentGravity.Center) {
+        Box(LayoutGravity.Center) {
             Text(text = "Droid Kaigi 2020")
         }
     }
