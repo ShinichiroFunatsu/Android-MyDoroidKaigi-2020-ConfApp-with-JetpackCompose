@@ -34,10 +34,8 @@ typealias GroupedUiSessions = Map<Pair<String, String>, Map<String, List<UiSessi
 
 @Composable
 fun SessionListScreen() {
-    val model = remember {
-        SessionListModel(UiStatus.Logo).apply {
-            fetchData()
-        }
+    val model = SessionListModel(UiStatus.Logo).apply {
+        fetchData()
     }
 
 // no need fetch on each active
