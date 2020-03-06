@@ -59,7 +59,6 @@ fun SessionListScreen() {
     }
 }
 
-fun LocalDateTime.toFString(formatter: DateTimeFormatter): String = this.format(formatter)
 val dayOfWeek: DateTimeFormatter = DateTimeFormatter.ofPattern("EEEE", Locale.US)
 val startTimeFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 val endTimeFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
@@ -154,22 +153,15 @@ fun SessionsSection(time: String, typography: Typography, sessions: List<UiSessi
 
 @Composable
 fun SessionSimple(session: UiSession) {
-    val dateFromTo = "%s-%s".format(
-        session.startsAt.toFString(startTimeFormat),
-        session.endsAt.toFString(endTimeFormat)
-    )
+
     val typography = MaterialTheme.typography()
     val emphasisLevels = MaterialTheme.emphasisLevels()
-    val widthRate: Float = when (session.lengthInMinutes) {
-        20 -> 0.65f
-        40 -> 0.93f
-        60 -> 0.99f
-        else -> 0.99f
-    } - 0.1f
+    val listItemParam = session.listItemParam
+
     Row() {
         Card(
             shape = RoundedCornerShape(10.dp),
-            modifier = LayoutFlexible(widthRate) + LayoutPadding(8.dp),
+            modifier = LayoutFlexible(listItemParam.widthRate) + LayoutPadding(8.dp),
             color = session.roomColor,
             elevation = 8.dp
         ) {
@@ -191,7 +183,7 @@ fun SessionSimple(session: UiSession) {
                                             .copy(color = Color.White)
                                     )
                                     Text(
-                                        dateFromTo,
+                                        session.dateFromTo,
                                         style = typography.caption
                                             .copy(color = Color.White)
                                     )
@@ -203,7 +195,7 @@ fun SessionSimple(session: UiSession) {
             }
         }
         // TODO change guideline of ConstraintLayout
-        Column(modifier = LayoutFlexible(1 - widthRate)) { }
+        Column(modifier = LayoutFlexible(1 - listItemParam.widthRate)) { }
     }
 }
 
