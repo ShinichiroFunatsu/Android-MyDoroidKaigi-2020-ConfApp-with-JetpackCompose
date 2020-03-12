@@ -3,6 +3,7 @@ package com.example.droidkaigi.conf2020app.ui.sessions
 import androidx.compose.Model
 import com.example.droidkaigi.conf2020app.AppStatus
 import com.example.droidkaigi.conf2020app.UseCase
+import com.example.droidkaigi.conf2020app.ui.SessionList
 import kotlinx.coroutines.*
 
 @Model
@@ -10,8 +11,8 @@ class SessionListModel(
     var status: Status
 ) {
 
-    private var _uiSessions: GroupedUiSessions = mapOf()
-    val uiSessions: GroupedUiSessions
+    private lateinit var _uiSessions: SessionList
+    val uiSessions: SessionList
         get() = _uiSessions
 
     sealed class Status {
@@ -20,13 +21,13 @@ class SessionListModel(
         object Idle: Status()
     }
 
+    @ExperimentalStdlibApi
     fun fetchData() {
         CoroutineScope(Dispatchers.Main).launch {
             delay(2000)
             loading {
-                val (newList, grouped) = UseCase.fetchUiSessionListAndGroupedPair()
-                AppStatus.updateSessions(newList)
-                _uiSessions = grouped
+                val sessionList = UseCase.fetchUiSessionListData()
+                _uiSessions = sessionList
             }
         }
     }

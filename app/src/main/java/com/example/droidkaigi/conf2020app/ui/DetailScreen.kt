@@ -14,10 +14,10 @@ import com.example.droidkaigi.conf2020app.ui.material.MaterialTheme
 
 @Composable
 fun DetailScreen(
-    sessionId: SessionId
+    sessionId: String
 ) {
 
-    val uiSession: UiSession = AppStatus.sessions.firstOrNull { uiSession -> uiSession.id == sessionId }
+    val uiSession: SessionItem = AppStatus.sessions.firstOrNull { uiSession -> uiSession.original.id == sessionId }
         ?: throw IllegalArgumentException("not found session: $sessionId")
 
     Column {

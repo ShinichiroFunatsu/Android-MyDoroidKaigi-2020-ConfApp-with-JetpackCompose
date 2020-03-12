@@ -19,19 +19,18 @@ import androidx.ui.text.font.FontWeight
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
 import com.example.droidkaigi.conf2020app.*
-import com.example.droidkaigi.conf2020app.ui.UiSession
+import com.example.droidkaigi.conf2020app.ui.*
 import com.example.droidkaigi.conf2020app.ui.material.MaterialTheme
 import com.example.droidkaigi.conf2020app.ui.material.Typography
-import com.example.droidkaigi.conf2020app.ui.roomNameText
-import com.example.droidkaigi.conf2020app.ui.titleText
 import com.example.droidkaigi.conf2020app.ui.sessions.SessionListModel.Status as UiStatus
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 
-typealias GroupedUiSessions = Map<Pair<String, String>, Map<String, List<UiSession>>>
+//typealias GroupedUiSessions = Map<Pair<String, String>, Map<String, List<UiSession>>>
 
 
+@ExperimentalStdlibApi
 @Composable
 fun SessionListScreen() {
     val model = SessionListModel(UiStatus.Logo).apply {
@@ -70,7 +69,7 @@ val WeakEmphasis: Emphasis = object : Emphasis {
 }
 
 @Composable
-fun SimpleSessionList(groupedUiSessions: GroupedUiSessions) {
+fun SimpleSessionList(sessionList: SessionList) {
     VerticalScroller {
         Column(modifier = LayoutWidth.Fill) {
 
@@ -86,7 +85,7 @@ fun SimpleSessionList(groupedUiSessions: GroupedUiSessions) {
             val typography = MaterialTheme.typography()
             val emphasisLevels = MaterialTheme.emphasisLevels()
 
-            groupedUiSessions.forEach { (dateStrs: Pair<String, String>, parDay) ->
+            sessionList.dates.forEach { sessionDate ->
                 Row() {
 
                     Spacer(modifier = LayoutWidth(8.dp))
@@ -98,7 +97,7 @@ fun SimpleSessionList(groupedUiSessions: GroupedUiSessions) {
                         Row(modifier = LayoutPadding(16.dp)) {
                             ProvideEmphasis(emphasis = emphasisLevels.medium) {
                                 Text(
-                                    text = dateStrs.first,
+                                    text = sessionDate.dateInfo.first,
                                     style = typography.h5.copy(
                                         fontWeight = FontWeight.W500
                                     )
@@ -107,7 +106,7 @@ fun SimpleSessionList(groupedUiSessions: GroupedUiSessions) {
 
                             ProvideEmphasis(emphasis = WeakEmphasis) {
                                 Text(
-                                    text = dateStrs.second,
+                                    text = sessionDate.dateInfo.second,
                                     modifier = LayoutGravity.Bottom + LayoutPadding(left = 16.dp, bottom = 4.dp),
                                     style = typography.subtitle1.copy(
                                         fontWeight = FontWeight.W500
@@ -117,8 +116,8 @@ fun SimpleSessionList(groupedUiSessions: GroupedUiSessions) {
 
                         }
 
-                        parDay.forEach { (time, sessions) ->
-                            SessionsSection(time, typography, sessions)
+                        sessionDate.sessionTimes.forEach {
+                            SessionsSection(typography, it)
                         }
                     }
                 }
@@ -128,11 +127,11 @@ fun SimpleSessionList(groupedUiSessions: GroupedUiSessions) {
 }
 
 @Composable
-fun SessionsSection(time: String, typography: Typography, sessions: List<UiSession>) {
+fun SessionsSection(typography: Typography, sessions: SessionTime) {
 
     ProvideEmphasis(emphasis = WeakEmphasis) {
         Text(
-            text = time,
+            text = sessions.timeInfo,
             modifier = LayoutPadding(left = 12.dp),
             style = typography.subtitle2
         )
@@ -144,7 +143,7 @@ fun SessionsSection(time: String, typography: Typography, sessions: List<UiSessi
         Spacer(modifier = LayoutWidth(60.dp))
 
         Column() {
-            sessions.forEach {
+            sessions.sessionItems.forEach {
                 SessionSimple(session = it)
             }
         }
@@ -152,38 +151,37 @@ fun SessionsSection(time: String, typography: Typography, sessions: List<UiSessi
 }
 
 @Composable
-fun SessionSimple(session: UiSession) {
+fun SessionSimple(session: SessionItem) {
 
     val typography = MaterialTheme.typography()
     val emphasisLevels = MaterialTheme.emphasisLevels()
-    val listItemParam = session.listItemParam
 
     Row() {
         Card(
             shape = RoundedCornerShape(10.dp),
-            modifier = LayoutFlexible(listItemParam.widthRate) + LayoutPadding(8.dp),
+            modifier = LayoutFlexible(session.widthRate) + LayoutPadding(8.dp),
             color = session.roomColor,
             elevation = 8.dp
         ) {
             Ripple(bounded = true) {
-                Clickable(onClick = { navigateTo(Screen.Detail(session.id)) }) {
+                Clickable(onClick = { navigateTo(Screen.Detail(session.original.id)) }) {
                     Row {
                         Column(modifier = LayoutPadding(16.dp)) {
                             Text(
-                                session.titleText,
+                                session.title,
                                 style = typography.subtitle1
                                     .copy(color = Color.White)
                             )
                             Row(modifier = LayoutPadding(top = 4.dp)) {
                                 ProvideEmphasis(emphasis = emphasisLevels.medium) {
                                     Text(
-                                        session.roomNameText,
+                                        session.room,
                                         modifier = LayoutPadding(right = 4.dp),
                                         style = typography.caption
                                             .copy(color = Color.White)
                                     )
                                     Text(
-                                        session.dateFromTo,
+                                        session.timeInfo,
                                         style = typography.caption
                                             .copy(color = Color.White)
                                     )
@@ -195,7 +193,7 @@ fun SessionSimple(session: UiSession) {
             }
         }
         // TODO change guideline of ConstraintLayout
-        Column(modifier = LayoutFlexible(1 - listItemParam.widthRate)) { }
+        Column(modifier = LayoutFlexible(1 - session.widthRate)) { }
     }
 }
 

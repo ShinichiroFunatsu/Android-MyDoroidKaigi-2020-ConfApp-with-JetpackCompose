@@ -2,9 +2,8 @@ package com.example.droidkaigi.conf2020app
 
 import androidx.compose.Model
 import androidx.compose.frames.ModelList
-import com.example.droidkaigi.conf2020app.data.DroidKaigiApi
-import com.example.droidkaigi.conf2020app.ui.SessionId
-import com.example.droidkaigi.conf2020app.ui.UiSession
+import com.example.droidkaigi.conf2020app.ui.SessionItem
+import com.example.droidkaigi.conf2020app.ui.SessionList
 import java.util.*
 
 
@@ -12,21 +11,20 @@ import java.util.*
 @Model
 object AppStatus {
     var currentScreen: Screen = Screen.SessionList
-    val sessions = ModelList<UiSession>()
+    lateinit var sessions: List<SessionItem>
     val favorites = ModelList<String>()
     val stack = Stack<Screen>().apply {
         this.push(Screen.SessionList)
     }
 
-    fun updateSessions(new: List<UiSession>) {
-        sessions.clear()
-        sessions.addAll(new)
+    fun updateSessions(new: List<SessionItem> ) {
+        sessions = new
     }
 }
 
 sealed class Screen {
     object SessionList : Screen()
-    data class Detail(val sessionId: SessionId) : Screen()
+    data class Detail(val sessionId: String) : Screen()
 }
 
 fun navigateTo(destination: Screen, isNeedStack: Boolean = true) {

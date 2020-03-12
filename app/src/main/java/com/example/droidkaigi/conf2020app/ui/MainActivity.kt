@@ -15,6 +15,7 @@ import com.example.droidkaigi.conf2020app.navigateBack
 import com.example.droidkaigi.conf2020app.ui.sessions.SessionListScreen
 
 class MainActivity : AppCompatActivity() {
+    @ExperimentalStdlibApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -30,6 +31,7 @@ class MainActivity : AppCompatActivity() {
     }
 }
 
+@ExperimentalStdlibApi
 @Composable
 fun AppContent() {
     Crossfade(AppStatus.currentScreen) { screen ->

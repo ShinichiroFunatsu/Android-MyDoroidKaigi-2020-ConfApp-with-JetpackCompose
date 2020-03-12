@@ -1,62 +1,62 @@
+@file:Suppress("FunctionName")
+
 package com.example.droidkaigi.conf2020app.ui
 
 import androidx.ui.graphics.Color
 import com.example.droidkaigi.conf2020app.data.response.*
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
+import kotlin.properties.Delegates
 
-data class UiSession(
-    val id: SessionId,
-    val title: TitleX,
-    val language: String,
-    val description: String?,
-    val speakers: List<Speaker>,
-    val message: String?,
-    val targetAudience: String,
 
-    val endsAt: LocalDateTime,
-    val startsAt: LocalDateTime,
-    val dateFromTo: String,
-    val lengthInMinutes: Int,
-
-    val room: Room,
-    val roomColor: Color,
-    val sessionCategoryItem: Category?,
-    val sessionType: String,
-
-    val levels: List<String>,
-    val interpretationTarget: Boolean,
-    val isPlenumSession: Boolean,
-    val isServiceSession: Boolean,
-    val asset: Asset,
-
-    val listItemParam: ListItemParam
-) {
-    data class ListItemParam(
-        val widthRate: Float
-    )
+fun SessionList(block: SessionList.() -> Unit): SessionList {
+    return SessionList().apply {
+        block()
+    }
 }
 
-data class SessionId(val value: String)
+class SessionList {
+    val dates = mutableListOf<SessionDate>()
+    fun Date(dateInfo: Pair<String, String>, block: SessionDate.() -> Unit) {
+        dates.add(SessionDate(dateInfo).apply { block() })
+    }
+}
 
-val UiSession.titleText: String
-    get() = title.ja
-val UiSession.roomNameText: String
-    get() = room.name.ja
+class SessionDate(
+    val dateInfo: Pair<String, String>
+) {
+    val sessionTimes = mutableListOf<SessionTime>()
+    fun Time(timeInfo: String, block: SessionTime.() -> Unit) {
+        sessionTimes.add(SessionTime(timeInfo).apply { block() })
+    }
+}
 
-fun LocalDateTime.toFString(formatter: DateTimeFormatter): String = this.format(formatter)
+class SessionTime(
+    val timeInfo: String
+) {
+    val sessionItems = mutableListOf<SessionItem>()
+    fun SessionItem(block: SessionItem.() -> Unit): SessionItem {
+        return SessionItem().apply { block() }.also {
+            sessionItems.add(it)
+        }
+    }
+}
 
-fun UiSession.toPrintString() = """
-# ${room.name.ja} ($lengthInMinutes min)
+class SessionItem {
+    lateinit var title: String
+    lateinit var room: String
+    lateinit var roomColor: Color
+    lateinit var timeInfo: String
+    lateinit var original: Session
+    var widthRate by Delegates.notNull<Float>()
+}
+
+fun SessionItem.toPrintString() = """
+# $room (${original.lengthInMinutes} min)
             
-title: ${title.ja} ($language)
+title: ${title} (${original.language})
             
 description:
- $description
+ ${original.description}
 
 ==========================
 
-message: $message
-            
         """.trimIndent()
-
